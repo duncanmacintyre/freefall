@@ -4,6 +4,7 @@
 import numpy
 import pandas
 import matplotlib.pyplot as plt
+from matplotlib.ticker import AutoMinorLocator
 from time import sleep
 
 # this function will return the similar angle in [0, 2 pi) for a given angle
@@ -105,45 +106,53 @@ def plot(df, start=None, stop=None, title=None):
 		df = df[(df['t'] >= start) & (df['t'] <= stop)]
 	
 	# set up the figure with four subplots
-	figure, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, figsize=(7, 10), sharex='all')
+	figure, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, figsize=(7, 10))
 
 	# use the first subplot for angular position
-	ax1.plot(df['t'], df['x'], 'b,', label='x')
-	ax1.plot(df['t'], df['y'], 'r,', label='y')
-	ax1.plot(df['t'], df['z'], 'g,', label='z')
+	ax1.plot(df['t'], df['x'], 'bo', markersize=0.2, label='x')
+	ax1.plot(df['t'], df['y'], 'ro', markersize=0.2, label='y')
+	ax1.plot(df['t'], df['z'], 'go', markersize=0.2, label='z')
+	ax1.grid(b=True, which='major', alpha=1) # major grid
+	ax1.grid(b=True, which='minor', alpha=0.2) # minor grid
+	ax1.set_xlim(start, stop) # set domain
+	ax1.xaxis.set_minor_locator(AutoMinorLocator(10)) # show some minor ticks
 	ax1.set_ylabel('Angle', **font)
-	ax1.grid(b=True, which='both')
 	ax1.legend()
 	
 	# use the second subplot for angular velocity
 	ax2.plot(df['t'], df['W_x'], 'b-', label='W_x')
 	ax2.plot(df['t'], df['W_y'], 'r-', label='W_y')
 	ax2.plot(df['t'], df['W_z'], 'g-', label='W_z')
+	ax2.grid(b=True, which='major', alpha=1) # major grid
+	ax2.grid(b=True, which='minor', alpha=0.2) # minor grid
+	ax2.set_xlim(start, stop) # set domain
+	ax2.xaxis.set_minor_locator(AutoMinorLocator(10)) # show some minor ticks
 	ax2.set_ylabel('Angular velocity', **font)
-	ax2.grid(b=True, which='both')
 	ax2.legend()
 	
 	# use the third subplot for angular acceleraiton
 	ax3.plot(df['t'], df['a_x'], 'b-', label='W_x')
 	ax3.plot(df['t'], df['a_y'], 'r-', label='W_y')
 	ax3.plot(df['t'], df['a_z'], 'g-', label='W_z')
+	ax3.grid(b=True, which='major', alpha=1) # major grid
+	ax3.grid(b=True, which='minor', alpha=0.2) # minor grid
+	ax3.set_xlim(start, stop) # set domain
+	ax3.xaxis.set_minor_locator(AutoMinorLocator(10)) # show some minor ticks
 	ax3.set_ylabel('Angular acceleration', **font)
-	ax3.grid(b=True, which='both')
 	ax3.legend()
 	
 	# use the fourth subplot for angular jerk
 	ax4.plot(df['t'], df['j_x'], 'b-', label='j_x')
 	ax4.plot(df['t'], df['j_y'], 'r-', label='j_y')
 	ax4.plot(df['t'], df['j_z'], 'g-', label='j_z')
+	ax4.grid(b=True, which='major', alpha=1) # major grid
+	ax4.grid(b=True, which='minor', alpha=0.2) # minor grid
+	ax4.set_xlim(start, stop) # set domain
+	ax4.xaxis.set_minor_locator(AutoMinorLocator(10)) # show some minor ticks
 	ax4.set_ylabel('Angular jerk', **font)
 	ax4.set_xlabel('Time (s)', **font)
-	ax4.grid(b=True, which='both')
 	ax4.legend()
 	
-	# set the plot domain
-	# due to shared x-axis, this will update all subplots
-	ax1.set_xlim(start, stop)
-
 	# if a title has been set, display the title and align
 	if title is not None:
 		figure.suptitle(title, fontsize=16, fontname=font['fontname'], fontweight=font['fontweight'])
