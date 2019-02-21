@@ -16,7 +16,7 @@ def correct_angle(n):
 	return(n)
 
 # this generator function yields the values of all variables for each Euler step in the freefall rotation simulation
-def euler_step(I_x, I_y, I_z, x, y, z, W_x, W_y, W_z, start, stop, dt):
+def euler_step(I_x, I_y, I_z, x, y, z, W_x, W_y, W_z, start, stop, dt, store_every=1):
 
 	# set up variables
 	I_x = numpy.float(I_x) # moments of inertia
@@ -37,69 +37,73 @@ def euler_step(I_x, I_y, I_z, x, y, z, W_x, W_y, W_z, start, stop, dt):
 	j_x = numpy.float() # angular jerk
 	j_y = numpy.float()
 	j_z = numpy.float()
-	t = numpy.float(start) # time
 	n_x = numpy.uint32(0) # number of anglular velocity sign changes 
 	n_y = numpy.uint32(0)
 	n_z = numpy.uint32(0)
+	t = numpy.float(start) # time
 	stop = numpy.float(stop) # stop time
 	dt = numpy.float(dt) # time step
+	j = numpy.int32(0) # this will keep track of the number of iterations between data storage points
 
 	# main loop function
-	for i in range(int((stop - start) / dt) + 1):
+	for i in range(int(((stop-start)/dt)/store_every) + 1): # main iterations
+		for j in range(store_every): # subiterations
 
-		# store the old angular accelerations
-		a_x_old = a_x
-		a_y_old = a_y
-		a_z_old = a_z
-		
-		# calculate angular accelerations from angular velocities, using Euler's equations
-		a_x = (I_y - I_z) * W_y * W_z / I_x
-		a_y = (I_z - I_x) * W_z * W_x / I_y
-		a_z = (I_x - I_y) * W_x * W_y / I_z
+			# store the old angular accelerations
+			a_x_old = a_x
+			a_y_old = a_y
+			a_z_old = a_z
+			
+			# calculate angular accelerations from angular velocities, using Euler's equations
+			a_x = (I_y - I_z) * W_y * W_z / I_x
+			a_y = (I_z - I_x) * W_z * W_x / I_y
+			a_z = (I_x - I_y) * W_x * W_y / I_z
 
-		# calculate and store angular jerk (derivative of angular acceleration)
-		if i > 0: # no jerk for first data point
-			j_x = (a_x - a_x_old) / dt
-			j_y = (a_y - a_y_old) / dt
-			j_z = (a_z - a_z_old) / dt
+			# calculate and store angular jerk (derivative of angular acceleration)
+			if i > 0 and j == 0: # no jerk for first data point; only need to calculate jerk when storing data
+				j_x = (a_x - a_x_old) / dt
+				j_y = (a_y - a_y_old) / dt
+				j_z = (a_z - a_z_old) / dt
 
-		# yield result
-		yield(t, x, y, z, W_x, W_y, W_z, a_x, a_y, a_z, j_x, j_y, j_z, n_x, n_y, n_z)
+			# yield result
+			if j == 0:
+				yield(t, x, y, z, W_x, W_y, W_z, a_x, a_y, a_z, j_x, j_y, j_z, n_x, n_y, n_z)
 
-		# store old angular velocity values
-		W_x_old = W_x
-		W_y_old = W_y
-		W_z_old = W_z
+			# store old angular velocity values
+			W_x_old = W_x
+			W_y_old = W_y
+			W_z_old = W_z
 
-		# calculate angular velocities from angular accelerations
-		W_x += a_x * dt
-		W_y += a_y * dt
-		W_z += a_z * dt
+			# calculate angular velocities from angular accelerations
+			W_x += a_x * dt
+			W_y += a_y * dt
+			W_z += a_z * dt
 
-		# compare new and old angular velocities to determine if a sign change has occurred
-		if numpy.sign(W_x) * numpy.sign(W_x_old) < 0:
-			n_x += 1 # incriment the sign-change counter
-		if numpy.sign(W_y) * numpy.sign(W_y_old) < 0:
-			n_y += 1 # incriment the sign-change counter
-		if numpy.sign(W_z) * numpy.sign(W_z_old) < 0:
-			n_z += 1 # incriment the sign-change counter
+			# compare new and old angular velocities to determine if a sign change has occurred
+			if numpy.sign(W_x) * numpy.sign(W_x_old) < 0:
+				n_x += 1 # incriment the sign-change counter
+			if numpy.sign(W_y) * numpy.sign(W_y_old) < 0:
+				n_y += 1 # incriment the sign-change counter
+			if numpy.sign(W_z) * numpy.sign(W_z_old) < 0:
+				n_z += 1 # incriment the sign-change counter
 
-		# calculate angular positions from angular velocities
-		x = correct_angle(x + W_x * dt)
-		y = correct_angle(y + W_y * dt)
-		z = correct_angle(z + W_z * dt)
+			# calculate angular positions from angular velocities
+			x = correct_angle(x + W_x * dt)
+			y = correct_angle(y + W_y * dt)
+			z = correct_angle(z + W_z * dt)
 
-		# incriment t
-		t += dt
+			# incriment t and j
+			t += dt
+			j += 1
 
 # this function does a complete Euler method run based on moments of inertia, returning a pandas.DataFrame of the results
-def I_sim(I_x, I_y, I_z, x, y, z, W_x, W_y, W_z, start, stop, dt):
+def I_sim(I_x, I_y, I_z, x, y, z, W_x, W_y, W_z, start, stop, dt, store_every=1):
 
 	# return a pandas.DataFrame constructed from the euler_step() generator function
-	return(pandas.DataFrame(euler_step(I_x=I_x, I_y=I_y, I_z=I_z, x=x, y=y, z=z, W_x=W_x, W_y=W_y, W_z=W_z, start=start, stop=stop, dt=dt), columns=('t', 'x', 'y', 'z', 'W_x', 'W_y', 'W_z','a_x', 'a_y', 'a_z', 'j_x', 'j_y', 'j_z', 'n_x', 'n_y', 'n_z')))
+	return(pandas.DataFrame(euler_step(I_x=I_x, I_y=I_y, I_z=I_z, x=x, y=y, z=z, W_x=W_x, W_y=W_y, W_z=W_z, start=start, stop=stop, dt=dt, store_every=store_every), columns=('t', 'x', 'y', 'z', 'W_x', 'W_y', 'W_z','a_x', 'a_y', 'a_z', 'j_x', 'j_y', 'j_z', 'n_x', 'n_y', 'n_z')))
 
 # this function runs the box simulation, returning a pandas.DataFrame
-def box_sim(l, h, w, m, W_x, W_y, W_z, start, stop, dt):
+def box_sim(l, h, w, m, W_x, W_y, W_z, start, stop, dt, store_every=1):
 
 	# calculate principle moments of inertia
 	I_x = (1.0/12.0) * m * (w**2 + h**2) # length axiss
@@ -111,7 +115,7 @@ def box_sim(l, h, w, m, W_x, W_y, W_z, start, stop, dt):
 	print(descriptor) # print this description
 	
 	# construct a pandas.DataFrame using I_sim() and return it
-	return(I_sim(I_x=I_x, I_y=I_y, I_z=I_z, x=0, y=0, z=0, W_x=W_x, W_y=W_y, W_z=W_z, start=start, stop=stop, dt=dt), (I_x, I_y, I_z))
+	return(I_sim(I_x=I_x, I_y=I_y, I_z=I_z, x=0, y=0, z=0, W_x=W_x, W_y=W_y, W_z=W_z, start=start, stop=stop, dt=dt, store_every=store_every), (I_x, I_y, I_z))
 
 # this function will plot the angular position, angular velocity, angular acceleration, and angular jerk for a given DataFrame over a given domain
 def plot(df, start=None, stop=None, title=None, sharex=False):
