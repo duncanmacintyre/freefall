@@ -97,7 +97,7 @@ def box_sim(l, h, w, m, W_x, W_y, W_z, start, stop, dt):
 	return(I_sim(I_x=I_x, I_y=I_y, I_z=I_z, x=0, y=0, z=0, W_x=W_x, W_y=W_y, W_z=W_z, start=start, stop=stop, dt=dt))
 
 # this function will plot the angular position, angular velocity, angular acceleration, and angular jerk for a given DataFrame over a given domain
-def plot(df, start=None, stop=None, title=None):
+def plot(df, start=None, stop=None, title=None, sharex=False):
 
 	# font preferences for axes titles
 	font = {'fontsize':13, 'fontname':'Source Sans Pro', 'fontweight':'medium'}
@@ -106,7 +106,7 @@ def plot(df, start=None, stop=None, title=None):
 		df = df[(df['t'] >= start) & (df['t'] <= stop)]
 	
 	# set up the figure with four subplots
-	figure, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, figsize=(7, 10))
+	figure, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, figsize=(7, 10), sharex=sharex)
 
 	# use the first subplot for angular position
 	ax1.plot(df['t'], df['x'], 'bo', markersize=0.2, label='x')
