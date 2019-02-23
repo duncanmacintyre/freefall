@@ -1,6 +1,3 @@
-# testing.py
-# use for testing the functions
-
 import numpy
 import pandas
 import os
