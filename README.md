@@ -80,8 +80,6 @@ Descriptions of the arguments can be found under [Common arguments](#common-argu
 
 Unlike in the other simulation functions, the initial values for `x`, `y`, and `z` can be specified here. These are the initial angular positions (angles) to start with, in radians. You will most likely want to set these to be zero, but they can be any value in [0, 2π).
 
-**Yielded data:**
-
 Each integration step, data is yielded as a tuple in the form (t, x, y, z, W_x, W_y, W_z, a_x, a_y, a_z, j_x, j_y, j_z, n_x, n_y, n_z). The meaning of each of these values is described in [Data labelling](#data-labelling).
 
 #### freefall.I_sim()
