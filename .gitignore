@@ -221,3 +221,4 @@ dmypy.json
 ### CUSTOM CHANGES ###
 testing.py
 *.csv
+*.txt
