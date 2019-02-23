@@ -34,13 +34,13 @@ Enjoy!
 
 To use these functions, download the file `freefall.py` and put it in the directory you're working in. Then, use `import freefall` to import the functions.
 
-You must have the `numpy`, `pandas`, and `matplotlib` modules installed to use these functions. If you've done any data processing work in Python before, chances are you already have them. If not, I recommend installing these modules by way of the [Anaconda distribution](https://www.anaconda.com).
+You must have the `numpy`, `pandas`, and `matplotlib` modules installed to use these functions. If you've done any data processing work in Python before, chances are you already have them. If not, I recommend installing these by way of the [Anaconda distribution](https://www.anaconda.com).
 
 Additionally, if you want to use visualization functionality, you need to have the `vpython` module installed. More information can be found [on their website](https://vpython.org). (If you don't want visualization, you don't need `vpython`.)
 
 If you want to get up and running quickly, I recommend checking out the example code included.
 
-Alternatively, the functions are relatively straightforward –you may find it useful to treat them as example code themselves and develop your own scripts based on them.
+Alternatively, the functions are relatively straightforward – you may find it useful to treat them as example code themselves and develop your own scripts based on them.
 
 ## Example code
 
