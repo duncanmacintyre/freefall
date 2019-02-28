@@ -5,7 +5,7 @@ A set of Python functions for simulating the rotational motion of falling object
 These functions can help you:
 
 * Run [Euler method](https://en.wikipedia.org/wiki/Euler_method) numerical simulations of the rotational motion of falling objects;
-* Easily plot the rotational motion of objects in freefall; and
+* Easily plot the angular position, angular velocity, angular acceleration, and angular jerk components of objects in freefall; and
 * Visualize the rotational motion of objects in freefall using `vpython`.
 
 Enjoy!
