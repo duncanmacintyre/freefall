@@ -59,8 +59,8 @@ for a in range(A): # index controlling W_x
 # SAVE LOGS
 # save a description of run metadata
 with open('{}/about.txt'.format(directory), 'w') as aboutfile:
-    aboutfile.write('Run {}\nI = ({}, {}, {})\nFinished {}'.format(directory, *I, datatime.datatime.now()))
+    aboutfile.write('Run {}\nI = ({}, {}, {})\nFinished {}'.format(directory, *I, datetime.datetime.now()))
 # save the run_log
-run_log.to_csv('{}/run_log.csv', index=False)
+run_log.to_csv('{}/run_log.csv'.format(directory), index=False)
 # print final notification
 print('{} complete'.format(directory))
