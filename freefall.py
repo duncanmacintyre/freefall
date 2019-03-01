@@ -5,6 +5,7 @@ import numpy
 import pandas
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
+from mpl_toolkits import mplot3d
 from time import sleep
 
 # font preferences for axes titles in plots
@@ -123,6 +124,7 @@ def box_sim(l, h, w, m, W_x, W_y, W_z, start, stop, dt, store_every=1):
 # this function will plot the angular position, angular velocity, angular acceleration, and angular jerk for a given DataFrame over a given domain
 def plot(df, start=None, stop=None, title=None, sharex=False):
 	
+	# trim to domain
 	# trimming only works if both start and stop are specified
 	if start is not None and stop is not None:
 		df = df[(df['t'] >= start) & (df['t'] <= stop)]
@@ -185,6 +187,34 @@ def plot(df, start=None, stop=None, title=None, sharex=False):
 	
 	# return the figure and axes
 	return(figure, (ax1, ax2, ax3, ax4))
+
+# this function will create a "fingerprint plot" of the three angular velocity components in 3D, for a given DataFrame over a given domain
+def fingerprint(df, start=None, stop=None, title=None):
+	
+	# trim to time domain
+	# trimming only works if both start and stop are specified
+	if start is not None and stop is not None:
+		df = df[(df['t'] >= start) & (df['t'] <= stop)]
+	
+	# set up the figure with one set of axes
+	figure, ax = plt.subplots(1, figsize=(7, 5), subplot_kw={'projection':'3d'})
+
+	# plot angular velocity components
+	ax.scatter(df['W_x'], df['W_y'], df['W_z'], c=(df['W_z'] + df['W_y']))
+	ax.set_xlabel('X angular velocity')
+	ax.set_ylabel('Y angular velocity')
+	ax.set_zlabel('Z angular velocity')
+	
+	# if a title has been set, display the title and align
+	if title is not None:
+		figure.suptitle(title, fontsize=16, fontname=font['fontname'], fontweight=font['fontweight'])
+		figure.tight_layout(rect=[0, 0, 1, 0.95])
+	# alignment for no title
+	else:
+		figure.tight_layout()
+	
+	# return the figure and axes
+	return(figure, ax)
 
 # this function runs a vpython box visualization based on an iterator (data) which yields four values each step in the form (t, x, y, z) as the first four values
 def visualize(data, l, h, w, speed=1, caption=''):
