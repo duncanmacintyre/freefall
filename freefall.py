@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from time import sleep
 
+# font preferences for axes titles in plots
+font = {'fontsize':13, 'fontname':'Source Sans Pro', 'fontweight':'medium'}
+
 # this function will return the similar angle in [0, 2 pi) for a given angle
 def correct_angle(n):
 	while n < 0:
@@ -119,10 +122,8 @@ def box_sim(l, h, w, m, W_x, W_y, W_z, start, stop, dt, store_every=1):
 
 # this function will plot the angular position, angular velocity, angular acceleration, and angular jerk for a given DataFrame over a given domain
 def plot(df, start=None, stop=None, title=None, sharex=False):
-
-	# font preferences for axes titles
-	font = {'fontsize':13, 'fontname':'Source Sans Pro', 'fontweight':'medium'}
 	
+	# trimming only works if both start and stop are specified
 	if start is not None and stop is not None:
 		df = df[(df['t'] >= start) & (df['t'] <= stop)]
 	
