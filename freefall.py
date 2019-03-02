@@ -247,6 +247,9 @@ def visualize(data, l, h, w, speed=1, caption=''):
 		# save variable values
 		t_old, x_old, y_old, z_old = t, x, y, z
 
+	# make the box invisible (allows Python to free up memory)
+	box.visible = False
+
 # this function will run the vpython box visualization for a pandas.DataFrame of simulation data
 def visualize_df(df, l, h, w, speed=1, caption='', start=None, stop=None):
 
