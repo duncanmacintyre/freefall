@@ -124,7 +124,7 @@ The figure object and a tuple of length four containing the axes are returned. Y
 fig, (ax1, ax2, ax3, ax4) = freefall.plot(df, start=None, stop=None, title=None, sharex=False)
 ```
 
-**Arguments**:
+Arguments:
 
 `df` is the `pandas.DataFrame` of simulation data to plot. For instance, you might generate a DataFrame using `freefall.I_sim()` or `freefall.box_sim()`, then plot the data with `freefall.plot()`. A description of the columns used can be found in [Data labelling](#data-labelling).
 
